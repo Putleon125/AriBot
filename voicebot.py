@@ -7,7 +7,7 @@ from fuzzywuzzy import fuzz
 import datetime
 
 opts = {
-    "alias": ('ари', 'аристотель','ария','аре','ар','кари'), # Варианты обращения к боту
+    "alias": ('ари', 'аристотель','ария','аре','ар','кари','аня'), # Варианты обращения к боту
     "tbr": ('скажи','расскажи','покажи','сколько','произнеси','переключи'), # Лишние частые слова
     "cmds": {
         "time": ('сейчас времени','который час','текущее время','времени','время'),
@@ -22,8 +22,12 @@ opts = {
 #Объявление переменных
 lock = threading.Lock()
 r = sr.Recognizer()
-m = sr.Microphone()
+m = sr.Microphone(sample_rate=48000)
 running = True
+
+r.dynamic_energy_threshold = False
+r.energy_threshold = 300
+
 
 # Функция синтеза голоса
 def speak(what):
@@ -95,7 +99,7 @@ def execute_cmd(cmd):
         pgui.press('left')
     
     elif cmd == 'greeting':
-         speak("Я голосовой помощник аари")
+         speak("Я голосовой помощник аари, созданный в рамках школьного проекта для демонстрации работы языка Python")
 
 
     else:
@@ -104,7 +108,7 @@ def execute_cmd(cmd):
 
 
 with m as source:
-    r.adjust_for_ambient_noise(source)
+    r.adjust_for_ambient_noise(source, duration=1)
 
 speak("Добрый день")
 speak("Я вас слушаю")
